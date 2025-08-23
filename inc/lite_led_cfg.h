@@ -22,7 +22,10 @@ extern "C" {
 #endif
 
 // LED polling period (ms)
-#define LED_POLL_PERIOD_MS    (100)
+#define LED_POLL_PERIOD_MS      (100)
+
+// 1: use LUT for breath/fade, 0: use calculation
+#define LED_BREATH_LUT_ENABLE   (1)
 
 // LED ID list (update according to your hardware)
 typedef enum {

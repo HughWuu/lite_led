@@ -44,6 +44,29 @@
 
 static led_dev_t g_led_list[LED_NUM] = {0};
 
+#if LED_BREATH_LUT_ENABLE
+#define LED_TABLE_SIZE 128
+static const uint8_t g_led_sin_table[LED_TABLE_SIZE + 1] = {
+    0,  1,  2,  3,  4,  5,  7,  8, 10, 11, 13, 15, 16, 18, 20, 22,
+   24, 26, 28, 30, 32, 34, 37, 39, 41, 44, 46, 49, 51, 54, 56, 59,
+   61, 64, 67, 69, 72, 75, 77, 80, 83, 86, 88, 91, 94, 97,100,100,
+  100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,
+  100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,
+   97, 94, 91, 88, 86, 83, 80, 77, 75, 72, 69, 67, 64, 61, 59, 56,
+   54, 51, 49, 46, 44, 41, 39, 37, 34, 32, 30, 28, 26, 24, 22, 20,
+   18, 16, 15, 13, 11, 10,  8,  7,  5,  4,  3,  2,  1,  0,  0,  0
+};
+
+static uint8_t lite_led_get_percent_from_phase(float phase)
+{
+    float step = LED_2PI / LED_TABLE_SIZE;
+    size_t index = (size_t)(phase / step);
+    if (index > LED_TABLE_SIZE) index = LED_TABLE_SIZE;
+
+    return g_led_sin_table[index];
+}
+#endif
+
 /**
  * @brief Initialize an LED instance
  * 
@@ -209,7 +232,11 @@ void lite_led_poll_handle(void)
                     }
                 }
                 // Brightness update (cosine wave)
+#if LED_BREATH_LUT_ENABLE
+                led->stat.percent = lite_led_get_percent_from_phase(led->stat.phase);
+#else
                 led->stat.percent = (uint8_t)((1 - cos(led->stat.phase)) / 2.0 * LED_MAX_BRIGHTNESS);
+#endif
                 if (led->stat.percent >= LED_MAX_BRIGHTNESS) led->stat.percent = LED_MAX_BRIGHTNESS;
                 break;
             case LED_MODE_ALTERNATE:
