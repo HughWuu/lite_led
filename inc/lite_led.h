@@ -48,8 +48,8 @@ extern "C" {
 #define LED_ERROR_MODE_INVALID      -2
 #define LED_ERROR_ALTERNATE_ID      -3
 
-
 typedef void (*led_set_brt_f)(uint8_t percent);
+typedef void (*led_dur_timeout_f)(void);
 
 typedef enum {
     LED_MODE_OFF = 0,
@@ -93,6 +93,7 @@ typedef struct {
     size_t remain_tick; // Remaining duration
     float phase;        // Current phase
     float phase_step;   // Step per tick
+    bool dur_timeout;
 } led_status_t;
 
 typedef struct {
@@ -100,10 +101,12 @@ typedef struct {
     led_inner_cfg_t cfg;
     led_status_t stat;
     led_set_brt_f set_percent_cb;
+    led_dur_timeout_f dur_timeout_cb;
 } led_dev_t;
 
 // ========== API ==========
 int lite_led_init(uint8_t id, led_set_brt_f cb);
+int lite_led_register_duration_timeout_cb(uint8_t id, led_dur_timeout_f cb);
 int lite_led_write(uint8_t id, const led_cfg_t *cfg);
 int lite_led_read(uint8_t id, led_status_t *status);
 void lite_led_poll_handle(void);

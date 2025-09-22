@@ -30,6 +30,11 @@ static void set_led3_percent(uint8_t percent)
     printf("LED3 brightness = %u%%\n", percent);
 }
 
+void led_blue_dur_timeout_callback(void)
+{
+
+}
+
 int main(void)
 {
     // 0. LED hardware init
@@ -56,6 +61,8 @@ int main(void)
         .duration_ms  = 5000,     // 5 秒后关
     };
     lite_led_write(LED_BLUE, &blink_cfg);
+    // .duration_ms时间结束后回调led_blue_dur_timeout_callback()函数
+    lite_led_register_duration_timeout_cb(LED_BLUE, led_blue_dur_timeout_callback);
 
     // 5. 再设置交替闪烁模式：LED0 和 LED1 交替亮灭
     led_cfg_t alternate_cfg = {
