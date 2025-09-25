@@ -19,7 +19,7 @@
  *   - Custom brightness callback for hardware abstraction
  * 
  * @author  HughWu
- * @date    2025-08-21
+ * @date    2025-08-23
  * @version 1.0
  */
 
@@ -116,3 +116,4 @@ void lite_led_poll_handle(void);
 #endif
 
 #endif // __LITE_LED_H__
+
